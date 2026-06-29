@@ -1,0 +1,33 @@
+name: Build Linux Plugin
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install compiler
+        run: |
+          sudo apt update
+          sudo apt install -y g++ make
+
+      - name: Build plugin
+        run: |
+          g++ -shared -fPIC \
+            -O2 \
+            -std=c++17 \
+            *.cpp \
+            -o disable_vehicle_limit.so
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: disable_vehicle_limit-linux
+          path: disable_vehicle_limit.so
