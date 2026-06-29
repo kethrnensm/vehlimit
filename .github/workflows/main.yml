@@ -2,8 +2,10 @@ name: Build Linux Plugin
 
 on:
   push:
+    branches:
+      - main
+      - master
   pull_request:
-  workflow_dispatch:
 
 jobs:
   build:
@@ -18,16 +20,20 @@ jobs:
           sudo apt update
           sudo apt install -y g++ make
 
+      - name: Show project files
+        run: |
+          pwd
+          ls -R
+
       - name: Build plugin
         run: |
+          mkdir -p plugins
           g++ -shared -fPIC \
-            -O2 \
-            -std=c++17 \
-            *.cpp \
-            -o disable_vehicle_limit.so
+            src/*.cpp \
+            -o plugins/vehlimit.so
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: disable_vehicle_limit-linux
-          path: disable_vehicle_limit.so
+          name: vehlimit-linux
+          path: plugins/vehlimit.so
