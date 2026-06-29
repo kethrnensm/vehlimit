@@ -2,9 +2,7 @@ name: Build Linux Plugin
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [ "main", "master" ]
   pull_request:
 
 jobs:
@@ -12,25 +10,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Install compiler
+      - name: Install dependencies
         run: |
+          sudo dpkg --add-architecture i386
           sudo apt update
-          sudo apt install -y g++ make
+          sudo apt install -y \
+            g++-multilib \
+            gcc-multilib \
+            libc6-dev-i386 \
+            make
 
-      - name: Show project files
+      - name: Show project structure
         run: |
           pwd
           ls -R
 
-      - name: Build plugin
+      - name: Create output folder
+        run: mkdir -p plugins
+
+      - name: Build 32-bit plugin
         run: |
-          mkdir -p plugins
-          g++ -shared -fPIC \
+          g++ -m32 \
+            -shared \
+            -fPIC \
+            -O2 \
             src/*.cpp \
             -o plugins/vehlimit.so
+
+      - name: Verify binary
+        run: |
+          file plugins/vehlimit.so
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
