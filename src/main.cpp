@@ -1,9 +1,10 @@
 #include "main.h"
 #include "urmem.hpp"
 
+
 logprintf_t logprintf(nullptr);
 void** ppPluginData(nullptr);
-
+void* pAMXFunctions = nullptr;
 const DWORD PATCH_ADDR = 0x6764A;
 
 const char* PATCH_SIG = 
@@ -33,8 +34,8 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void** const ppData) noexcept
         }
         else 
         {
-            UnProtect(patch_model_address + 12, 2); // ‡¥‘¡ 10
-            *reinterpret_cast<unsigned short*>(patch_model_address + 12) = 0x9090; // ‡¥‘¡ 10
+            UnProtect(patch_model_address + 12, 2); // √†¬¥√î√Å 10
+            *reinterpret_cast<unsigned short*>(patch_model_address + 12) = 0x9090; // √†¬¥√î√Å 10
             logprintf("[Disable vehicle limit]: Plugin loaded");
         }
     }
